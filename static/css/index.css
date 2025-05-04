@@ -1,0 +1,44 @@
+﻿.gradient-bg {
+    background: linear-gradient(135deg, #6e8efb 0%, #a777e3 100%);
+}
+
+.slider-thumb::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #6e8efb;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.slider-thumb::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #6e8efb;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.result-container {
+    transition: all 0.3s ease;
+}
+
+.result-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+#prompt {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.word-count {
+    font-size: 0.8rem;
+    color: #6b7280;
+    text-align: right;
+    margin-top: 0.25rem;
+}

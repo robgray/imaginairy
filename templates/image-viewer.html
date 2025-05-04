@@ -1,0 +1,21 @@
+﻿{% extends 'base.html' %}
+{% block title %}- Image Viewer{%  endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/index.js') }}" type="text/javascript"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+{% endblock %}
+{% block heading_name %}Image Viewer{% endblock %}
+{% block content %}
+<div class="bg-white rounded-xl shadow-2xl overflow-hidden">
+    <div class="bg-gray-50 border-t border-gray-200 p-8">
+        <div class="grid grid-cols-1 gap-6">
+            <!-- Placeholder for generated images -->
+            <div class="result-container bg-white p-4 rounded-lg shadow-md">
+                <div class="aspect-square bg-gray-200 rounded-lg flex items-center justify-center mb-3">
+                    <span class="text-gray-500"><img id="generation-image" src="{{ image_url }}"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,3 +1,5 @@
+static/generated-images/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -172,3 +174,16 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+models/cyber-realistic
+models/cyber-realistic-pony
+models/cyber-realistic-xl
+models/realistic
+models/illustrious-realism
+/models/graycolor/
+/models/power-puff/
+/models/reijality/
+/models/revanimated-v2/
+/static/temp-images/
+/static/gallery/
+
+/models/anireijl/

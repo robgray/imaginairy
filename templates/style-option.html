@@ -1,0 +1,8 @@
+{% macro style_option(id, label) %}
+<div>
+    <label class="flex items-center">
+        <input id="{{ id }}" type="checkbox" class="form-checkbox text-purple-600 mr-2 style-choice">
+        <span class="text-gray-700">{{ label }}</span>
+    </label>
+</div>
+{% endmacro %}
