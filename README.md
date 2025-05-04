@@ -1,12 +1,6 @@
 # image-generation
 learning python with text to image
 
-Currently experimenting with 4 models
-- [Realistic Vision V6.0  B1](https://civitai.com/models/4201?modelVersionId=501240)
-- [CyberRealistic](https://civitai.com/models/15003/cyberrealistic) 
-- [CyberRealistic Pony](https://civitai.com/models/443821/cyberrealistic-pony)
-- [CyberRealistic XL](https://civitai.com/models/312530?modelVersionId=1609607)
-
 Models are downloaded as `.safetensor` files, mostly from [Civitai.com](https://civitai.com).
 
 When downloaded, use `models/import_sd_model.py` to convert the safetensor files for use:
