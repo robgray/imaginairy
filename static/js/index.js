@@ -1,11 +1,12 @@
 ﻿function loadPrompt(prompt) {
-    console.log(prompt);
+    // upscale-small-images is not in earlier versions of the prompt
+    const upscaleSmallImages = prompt['upscale-small-images'] ?? false;
 
     $('#generation-prompt').val(prompt["generation-prompt"]);
     $('#negative-prompt').val(prompt["negative-prompt"]);
-    $('#resolution').val(prompt.resolution);
-    $('#seed').val(prompt.seed);
-    $('#model').val(prompt.modelNumber);
+    $('#resolution').val(prompt.resolution).change();
+    $('#seed').val(prompt.seed).trigger('change');
+    $('#model').val(prompt.modelNumber).trigger('change');
     $('#guidance-scale').val(prompt.guidanceScale);
     $('#inference-steps').val(prompt.inferenceSteps);
     $('#recommended').prop('checked', prompt.recommended);
@@ -16,10 +17,9 @@
     $('#anime').prop('checked', prompt.anime);
     $('#charcoal').prop('checked', prompt.charcoal);
     $('#impressionist').prop('checked', prompt.impressionist);
+    $('#upscale-small-images').prop('checked', upscaleSmallImages);
 
-    // need to set the labels...
-    $('#guidance-scale-value').html(prompt.guidanceScale);
-    $('#inference-steps-value').html(prompt.inferenceSteps);
+    window.history.pushState({}, '', '/');
 }
 
 function onModelLoaded(data) {
@@ -58,17 +58,14 @@ function onModelLoaded(data) {
         resolution.append(option);
     })
 
-    // Check if there's a prompt to load
+    // once the model is loaded, load the prompt if it exists
     if (window.location.search.includes('prompt_id'))
     {
         const promptId = window.location.search.split('prompt_id=')[1];
         $.ajax({
             type: 'GET',
             url: `/api/prompts/${promptId}`,
-            success: function (data) {
-                loadPrompt(data);
-                window.history.pushState({}, '', '/');
-            }
+            success: loadPrompt
         })
     }
 }
@@ -99,7 +96,7 @@ $(document).ready(function () {
         const requestId = $this.data('id');
         if (!requestId)
         {
-            console.log('No request id');
+            toastr.error('No request id');
             return;
         }
         $.ajax({
@@ -110,8 +107,8 @@ $(document).ready(function () {
                 'requestid': `${requestId}`
             }),
             success: function (data) {
-                console.log(data.message);
                 $this.addClass('hidden');
+                toastr.success('Image saved');
             }
         })
     })
@@ -135,14 +132,8 @@ $(document).ready(function () {
         negativePrompt.val(negativePrompt.data('text'));
     });
 
-    $('#inference-steps-value').html(inferenceSteps.val());
-    $('#guidance-scale-value').html(guidanceScale.val());
-
     inferenceSteps.change(() => $('#inference-steps-value').html(inferenceSteps.val()));
-
-    guidanceScale.change(() => {
-        $('#guidance-scale-value').html(guidanceScale.val());
-    });
+    guidanceScale.change(() => $('#guidance-scale-value').html(guidanceScale.val()));
 
     $('#start-generation').click(() => {
 
@@ -185,6 +176,7 @@ $(document).ready(function () {
                 'sketch': $('#sketch').is(':checked'),
                 'impressionist': $('#impressionist').is(':checked'),
                 'recommended': $('#recommended').is(':checked'),
+                'upscale-small-images': $('#upscale-small-images').is(':checked')
             }),
             success: function (data)
             {

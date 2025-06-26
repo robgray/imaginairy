@@ -5,4 +5,7 @@ protobuf
 sentencepiece
 accelerate
 flask
-flask_executor
+flask-executor
+
+asdff
+huggingface_hub

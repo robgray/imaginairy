@@ -139,7 +139,7 @@ Image Generation
                         value="3"
                         class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb"
                     >
-                    <div class="text-xs text-gray-500 mt-1">Higher more closely matches the description</div>
+                    <div class="text-xs text-gray-500 mt-1">Higher more closely matches the description but needs more inference steps and has more contrast</div>
                 </div>
 
                 <!-- Resolution Select -->
@@ -151,6 +151,10 @@ Image Generation
                     >
                         <option selected>Empty</option>
                     </select>
+                    <label class="flex items-center mt-2">
+                        <input id="upscale-small-images" type="checkbox" class="form-checkbox text-purple-600 mr-2 style-choice">
+                        <span class="text-gray-700">4x Upscale 512 x 512 images</span>
+                    </label>
                 </div>
 
                 <div class="mt-6">

@@ -7,7 +7,7 @@ class Prompt:
         self._request_id = json['id']
         self._model_number = int(json['modelNumber'])
         self._model_config = MODEL_CONFIGURATIONS[self._model_number]
-        self._model_path = self._model_config.model;
+        self._model_path = self._model_config.model
         self._seed = json['seed']
         self._inference_steps = json['inferenceSteps']
         self._guidance_scale = json['guidanceScale']
@@ -22,6 +22,9 @@ class Prompt:
         self._charcoal = bool(json['charcoal'])
         self._impressionist = bool(json['impressionist'])
         self._use_recommended = bool(json['recommended'])
+        self._upscale_small_images = bool(json['upscale-small-images'] if 'upscale-small-images' in json else False)
+
+        self._use_memory_efficient = False
 
 
     def to_json(self):
@@ -41,9 +44,13 @@ class Prompt:
             'sketch': self._sketch,
             'charcoal': self._charcoal,
             'impressionist': self._impressionist,
-            'recommended': self._use_recommended
+            'recommended': self._use_recommended,
+            'upscale-small-images': self._upscale_small_images
         }
 
+    @property
+    def use_memory_efficient(self):
+        return self._use_memory_efficient
 
     @property
     def request_id(self):
@@ -120,6 +127,11 @@ class Prompt:
     @property
     def use_recommended(self):
         return self._use_recommended
+
+    @property
+    def upscale_small_images(self):
+        return self._upscale_small_images
+
 
     def get_prompt_text(self):
         prompt = self.generation_prompt

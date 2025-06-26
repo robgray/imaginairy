@@ -5,6 +5,7 @@
            url: '/api/images',
            success: function () {
                window.location.href = '/';
+               toastr.success('All images deleted');
            }
        })
     });
@@ -17,6 +18,7 @@
             url: `/api/images/${id}` ,
             success: function () {
                 $(`.${id}`).remove();
+                toastr.success('Image deleted');
             }
         })
     })

@@ -23,3 +23,12 @@ as suggested from the model page on Civitai.com.
 I've left some range either side of the recommended settings so they can be played with a bit.
 
 To get going, make use Python `3.12` and run `main.py` which will start a Flask web api and basic jquery UI. 
+
+## Getting going
+Getting going can be a PITA.
+Assuming CUDA is available here...
+see https://pytorch.org/get-started/locally/ to get your version of CUDA. I have a 4070ti SUPER and installed CUDA SDK 12.8.
+
+```aiignore
+pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
+```
