@@ -132,7 +132,7 @@ def check_generation(request_id):
 
 @app.route('/api/images', methods=['DELETE'])
 def delete_all_images():
-    delete_all_gallery_images();
+    delete_all_gallery_images()
     return '', 204
 
 

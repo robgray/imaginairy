@@ -25,7 +25,7 @@ def generate(prompt: Prompt):
     pipe = DiffusionPipeline.from_pretrained(
         prompt.model_path,
         torch_dtype=torch.float16,
-        #safety_checker=None,
+        safety_checker=None,
         use_safetensors=False,
     )
     pipe.safety_checker = None

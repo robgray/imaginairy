@@ -159,4 +159,20 @@ MODEL_CONFIGURATIONS = [
         negative_prompt_tip='extra_fingers, malformed_hands, deformed_feet,',
         url='https://civitai.com/models/7371/rev-animated',
     ),
+    ModelConfig(
+        model='models/pony-realism',
+        display_name='Pony Realism',
+        use_32bit=False,
+        inference_step_min=20,
+        inference_step_max=60,
+        inference_step_default=25,
+        guidance_scale_min=1.0,
+        guidance_scale_max=8.0,
+        guidance_scale_default=3.5,
+        resolutions=[(1024,1024),(1216,832),(832,1216)],
+        resolutions_default_index=0,
+        prompt_tip='score_9, score_8_up, score_7_up, {SUBJECT}',
+        negative_prompt_tip='score_6, score_5, score_4, (worst quality:1.2), (low quality:1.2), (normal quality:1.2), lowres, bad anatomy, bad hands, signature, watermarks, ugly, imperfect eyes, skewed eyes, unnatural face, unnatural body, error, extra limb, missing limbs',
+        url='https://civitai.com/models/372465/pony-realism',
+    )
 ]

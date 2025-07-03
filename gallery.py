@@ -14,18 +14,23 @@ def setup():
 
 def get_all():
     images = []
+    
     for file in os.listdir(IMAGES_FOLDER):
-        if (file.endswith('.png') and file.startswith('image-')):
+        if file.endswith('.png') and file.startswith('image-'):
             guid_pattern = r'image-([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\.png'
             match = re.match(guid_pattern, file)
-            imageid = match.group(1) if match else file.replace('.png', '').replace('image-', '')
+            image_id = match.group(1) if match else file.replace('.png', '').replace('image-', '')
+            filepath = os.path.join(IMAGES_FOLDER, file)
+            created_time = os.path.getctime(filepath)
             images.append({
                 'url': IMAGES_FOLDER + file,
-                'id': imageid,
+                'id': image_id,
+                'created': created_time
             })
         else:
             continue
 
+    images.sort(key=lambda x: x['created'], reverse=True)
     return images
 
 
