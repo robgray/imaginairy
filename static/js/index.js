@@ -19,6 +19,9 @@
     $('#impressionist').prop('checked', prompt.impressionist);
     $('#upscale-small-images').prop('checked', upscaleSmallImages);
 
+    // Trigger input to recount prompt length
+    $('#generation-prompt').trigger('input');
+
     window.history.pushState({}, '', '/');
 }
 
@@ -68,6 +71,25 @@ function onModelLoaded(data) {
             success: loadPrompt
         })
     }
+
+    updateWordCount(data.prompt);
+}
+
+function updateWordCount(prompt) {
+    $.ajax({
+            type: 'GET',
+            url: `/api/token-count?prompt=${prompt}`,
+            success: (data) => {
+                console.log(data);
+                const wordCountLabel = $("#wordCount");
+                wordCountLabel.html(data.token_count);
+                if (data.token_count > 75) {
+                    wordCountLabel.addClass('text-red-500');
+                } else {
+                    wordCountLabel.removeClass('text-red-500');
+                }
+            }
+        })
 }
 
 $(document).ready(function () {
@@ -223,15 +245,7 @@ $(document).ready(function () {
 
     $("#generation-prompt").on('input', function() {
         const text = $(this).val().trim();
-        const wordCount = text === '' ? 0 : text.split(/\s+/).length;
-        const wordCountLabel = $("#wordCount");
-        wordCountLabel.html(wordCount);
-
-        if (wordCount > 50) {
-            wordCountLabel.addClass('text-red-500');
-        } else {
-            wordCountLabel.removeClass('text-red-500');
-        }
+        updateWordCount(text);
     });
 
     resetNegativePromptButton.trigger('click');
