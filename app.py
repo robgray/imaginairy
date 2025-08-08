@@ -22,7 +22,6 @@ clip_tokenizer = CLIPTokenizer.from_pretrained("openai/clip-vit-large-patch14")
 app = Flask(__name__)
 executor = Executor(app)
 
-
 ###
 ### Page methods
 ###
@@ -30,7 +29,6 @@ executor = Executor(app)
 
 @app.route('/')
 def index():
-
     # Ensure data directories exist
     image_generator.setup()
     gallery_setup()
@@ -81,7 +79,6 @@ def gallery():
 def image_viewer(request_id):
     image_filename = get_gallery_image_filename(request_id)
     return render_template('image-viewer.html', image_url='/' + image_filename)
-
 
 ##
 ## API Methods

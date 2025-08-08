@@ -1,5 +1,8 @@
 ﻿from PIL.Image import Image
 from diffusers import DiffusionPipeline, StableDiffusionUpscalePipeline, DPMSolverMultistepScheduler
+from typing import Optional
+
+_current_pipe: Optional[DiffusionPipeline] = None
 import torch
 import os
 from flask import json
@@ -16,21 +19,31 @@ def setup():
     if not os.path.exists(TEMP_PATH):
         os.makedirs(TEMP_PATH)
 
+def get_pipeline(model_path: str) -> DiffusionPipeline:
+    global _current_pipe
+
+    if _current_pipe is None or _current_pipe.config['_name_or_path'] != model_path:
+        if not torch.cuda.is_available():
+            throw_error("CUDA is not available")
+
+        _current_pipe = DiffusionPipeline.from_pretrained(
+            model_path,
+            torch_dtype=torch.float16,
+            safety_checker=None,
+            use_safetensors=False,
+        )
+        _current_pipe.safety_checker = None
+        _current_pipe.scheduler = DPMSolverMultistepScheduler.from_config(_current_pipe.scheduler.config)
+        _current_pipe.to("cuda")
+
+    return _current_pipe
+
 # Generate the image
 def generate(prompt: Prompt):
-
     if not torch.cuda.is_available():
         throw_error("CUDA is not available")
 
-    pipe = DiffusionPipeline.from_pretrained(
-        prompt.model_path,
-        torch_dtype=torch.float16,
-        safety_checker=None,
-        use_safetensors=False,
-    )
-    pipe.safety_checker = None
-    pipe.scheduler = DPMSolverMultistepScheduler.from_config(pipe.scheduler.config)
-    pipe.to("cuda")
+    pipe = get_pipeline(prompt.model_path)
 
     try:
         # Need generator (with seed) for a consistent image given a prompt
