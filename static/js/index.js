@@ -19,8 +19,7 @@
     $('#impressionist').prop('checked', prompt.impressionist);
     $('#upscale-small-images').prop('checked', upscaleSmallImages);
 
-    // Trigger input to recount prompt length
-    $('#generation-prompt').trigger('input');
+    updateWordCount(prompt);
 
     window.history.pushState({}, '', '/');
 }
@@ -71,16 +70,15 @@ function onModelLoaded(data) {
             success: loadPrompt
         })
     }
-
-    updateWordCount(data.prompt);
 }
 
-function updateWordCount(prompt) {
+function updateWordCount(prompt, options) {
     $.ajax({
-            type: 'GET',
-            url: `/api/token-count?prompt=${prompt}`,
+            type: 'POST',
+            url: '/api/token-count',
+            contentType: 'application/json',
+            data: JSON.stringify(buildPromptRequestData()),
             success: (data) => {
-                console.log(data);
                 const wordCountLabel = $("#wordCount");
                 wordCountLabel.html(data.token_count);
                 if (data.token_count > 75) {
@@ -90,6 +88,29 @@ function updateWordCount(prompt) {
                 }
             }
         })
+}
+
+function buildPromptRequestData()
+{
+    return {
+                'id': crypto.randomUUID().toString(),
+                'modelNumber': $('#model').val(),
+                'inferenceSteps': $('#inference-steps').val(),
+                'guidanceScale': $('#guidance-scale').val(),
+                'seed': $('#seed').val(),
+                'resolution': $('#resolution').val(),
+                'negative-prompt': $('#negative-prompt').val(),
+                'generation-prompt': $('#generation-prompt').val(),
+                'high-contrast': $('#high-contrast').is(':checked'),
+                'water-color': $('#water-color').is(':checked'),
+                'photo-realistic': $('#photo-realistic').is(':checked'),
+                'charcoal': $('#charcoal').is(':checked'),
+                'anime': $('#anime').is(':checked'),
+                'sketch': $('#sketch').is(':checked'),
+                'impressionist': $('#impressionist').is(':checked'),
+                'recommended': $('#recommended').is(':checked'),
+                'upscale-small-images': $('#upscale-small-images').is(':checked')
+            };
 }
 
 $(document).ready(function () {
@@ -102,12 +123,14 @@ $(document).ready(function () {
     const recommendedCheckbox = $('#recommended');
 
     recommendedCheckbox.click(() => {
+        updateWordCount(buildPromptRequestData());
         if (recommendedCheckbox.is(':checked')) {
             $(".style-choice").prop("checked", false);
         }
     })
 
     $(".style-choice").click(function() {
+        updateWordCount(buildPromptRequestData());
         if ($(this).is(':checked')) {
             recommendedCheckbox.prop("checked", false);
         }
@@ -164,10 +187,6 @@ $(document).ready(function () {
         generateButton.html("<i class='fas fa-spinner fa-spin mr-2'></i> Generating...");
         generateButton.addClass('disabled');
 
-        const inferenceSteps = $('#inference-steps').val();
-        const guidanceScale = $('#guidance-scale').val();
-        const modelNumber = $('#model').val();
-
         // Start the generation
         $('#generation-image')
             .removeAttr('src')
@@ -181,25 +200,7 @@ $(document).ready(function () {
             type: 'POST',
             url: '/api/start_generation',
             contentType: 'application/json',
-            data: JSON.stringify({
-                'id': crypto.randomUUID().toString(),
-                'modelNumber': modelNumber,
-                'inferenceSteps': inferenceSteps,
-                'guidanceScale': guidanceScale,
-                'seed': $('#seed').val(),
-                'resolution': $('#resolution').val(),
-                'negative-prompt': $('#negative-prompt').val(),
-                'generation-prompt': $('#generation-prompt').val(),
-                'high-contrast': $('#high-contrast').is(':checked'),
-                'water-color': $('#water-color').is(':checked'),
-                'photo-realistic': $('#photo-realistic').is(':checked'),
-                'charcoal': $('#charcoal').is(':checked'),
-                'anime': $('#anime').is(':checked'),
-                'sketch': $('#sketch').is(':checked'),
-                'impressionist': $('#impressionist').is(':checked'),
-                'recommended': $('#recommended').is(':checked'),
-                'upscale-small-images': $('#upscale-small-images').is(':checked')
-            }),
+            data: JSON.stringify(buildPromptRequestData()),
             success: function (data)
             {
                 // Check every 5 seconds
@@ -245,7 +246,17 @@ $(document).ready(function () {
 
     $("#generation-prompt").on('input', function() {
         const text = $(this).val().trim();
-        updateWordCount(text);
+        const options = {
+                'high-contrast': $('#high-contrast').is(':checked'),
+                'water-color': $('#water-color').is(':checked'),
+                'photo-realistic': $('#photo-realistic').is(':checked'),
+                'charcoal': $('#charcoal').is(':checked'),
+                'anime': $('#anime').is(':checked'),
+                'sketch': $('#sketch').is(':checked'),
+                'impressionist': $('#impressionist').is(':checked'),
+                'recommended': $('#recommended').is(':checked'),
+            };
+        updateWordCount(text, options);
     });
 
     resetNegativePromptButton.trigger('click');

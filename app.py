@@ -86,19 +86,20 @@ def image_viewer(request_id):
 ##
 ## API Methods
 ##
-@app.route("/api/token-count", methods=[ "GET" ])
+@app.route("/api/token-count", methods=[ 'POST' ])
 def get_token_count():
-    prompt = request.args.get("prompt", "")
-    print(prompt)
-    if not prompt:
-        return jsonify({"error": "No prompt provided"}), 400
+    prompt = Prompt(request.json)
+    prompt_text = prompt.get_prompt_text()
+    
+    if not prompt_text:
+        return jsonify({"token_count": 0 })
 
     # Tokenize using CLIPTokenizer
-    tokens = clip_tokenizer.encode(prompt)
+    tokens = clip_tokenizer.encode(prompt_text)
     token_count = len(tokens)
     return jsonify({"token_count": token_count})
 
-@app.route("/api/models/<index>", methods=[ "GET" ])
+@app.route("/api/models/<index>", methods=[ 'GET' ])
 def get_model_options(index):
     model_config = MODEL_CONFIGURATIONS[int(index)]
     return jsonify({
