@@ -1,6 +1,7 @@
 ﻿import os, shutil, json
 from flask import Flask, render_template, jsonify, request
 from flask_executor import Executor
+from transformers import CLIPTokenizer
 
 # Custom imports
 from gallery import (
@@ -15,6 +16,8 @@ from gallery import (
 import image_generator
 from prompt import Prompt
 from models.ModelConfigs import MODEL_CONFIGURATIONS
+
+clip_tokenizer = CLIPTokenizer.from_pretrained("openai/clip-vit-large-patch14")
 
 app = Flask(__name__)
 executor = Executor(app)
@@ -83,7 +86,20 @@ def image_viewer(request_id):
 ##
 ## API Methods
 ##
-@app.route("/api/models/<index>", methods=[ "GET" ])
+@app.route("/api/token-count", methods=[ 'POST' ])
+def get_token_count():
+    prompt = Prompt(request.json)
+    prompt_text = prompt.get_prompt_text()
+    
+    if not prompt_text:
+        return jsonify({"token_count": 0 })
+
+    # Tokenize using CLIPTokenizer
+    tokens = clip_tokenizer.encode(prompt_text)
+    token_count = len(tokens)
+    return jsonify({"token_count": token_count})
+
+@app.route("/api/models/<index>", methods=[ 'GET' ])
 def get_model_options(index):
     model_config = MODEL_CONFIGURATIONS[int(index)]
     return jsonify({
